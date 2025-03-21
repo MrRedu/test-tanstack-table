@@ -31,7 +31,6 @@ interface DynamicTableProps<T> {
   columns: ColumnDef<T>[];
   pageSizeOptions?: number[];
   globalFilterPlaceholder?: string;
-  sortableColumns?: string[];
   isLoading?: boolean;
 }
 
@@ -41,7 +40,6 @@ export const DynamicTable = <T,>({
   columns,
   pageSizeOptions = [5, 10, 20, 30, 40, 50],
   globalFilterPlaceholder = 'Search...',
-  sortableColumns = [],
   isLoading = false,
 }: DynamicTableProps<T>) => {
   const [filterInput, setFilterInput] = useState<string>('');
@@ -82,31 +80,24 @@ export const DynamicTable = <T,>({
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <Tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  const isSortable = sortableColumns.includes(header.column.id);
-                  return (
-                    <Th
-                      key={header.id}
-                      $isSortable={isSortable}
-                      onClick={
-                        isSortable
-                          ? header.column.getToggleSortingHandler()
-                          : undefined
-                      }
-                    >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                      {(isSortable &&
-                        {
-                          asc: ' 🔼',
-                          desc: ' 🔽',
-                        }[header.column.getIsSorted() as string]) ??
-                        null}
-                    </Th>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <Th
+                    key={header.id}
+                    $isSortable={header.column.getCanSort()} // Usar getCanSort() para verificar si la columna es sortable
+                    onClick={header.column.getToggleSortingHandler()} // Habilitar el sorting si la columna es sortable
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                    {(header.column.getCanSort() &&
+                      {
+                        asc: ' 🔼',
+                        desc: ' 🔽',
+                      }[header.column.getIsSorted() as string]) ??
+                      null}
+                  </Th>
+                ))}
               </Tr>
             ))}
           </thead>

@@ -10,14 +10,17 @@ const columns: ColumnDef<User>[] = [
   {
     accessorKey: 'name',
     header: 'Name',
+    enableSorting: true,
   },
   {
     accessorKey: 'age',
     header: 'Age',
+    enableSorting: true,
   },
   {
     accessorKey: 'address',
     header: 'Address',
+    enableSorting: false,
   },
 ];
 
@@ -42,12 +45,7 @@ const App: React.FC = () => {
   return (
     <div>
       <h1>User Table</h1>
-      <DynamicTable
-        data={data}
-        columns={columns}
-        sortableColumns={['name', 'age']}
-        isLoading={isLoading}
-      />
+      <DynamicTable data={data} columns={columns} isLoading={isLoading} />
     </div>
   );
 };
